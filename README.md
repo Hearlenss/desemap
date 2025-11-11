@@ -1,2 +1,201 @@
-# desemap
-WEB analiz tool
+
+===============================
+Developer: 0x1A7
+Tool Name: DESEMAP
+===============================
+====================================================================
+                   D E E P M A P   (Site Link Collector)
+====================================================================
+Developer : 0x1A7
+Version   : 1.0
+Python    : 3.10+
+====================================================================
+
+  ██████╗ ███████╗███████╗███████╗███╗   ███╗ █████╗ ██████╗ 
+  ██╔══██╗██╔════╝██╔════╝██╔════╝████╗ ████║██╔══██╗██╔══██╗
+  ██║  ██║█████╗  ███████╗█████╗  ██╔████╔██║███████║██████╔╝
+  ██║  ██║██╔══╝  ╚════██║██╔══╝  ██║╚██╔╝██║██╔══██║██╔══╝ 
+  ██████╔╝███████╗███████║███████╗██║ ╚═╝ ██║██║  ██║██║  
+  ╚═════╝ ╚══════╝╚══════╝╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  
+                       Developer: 0x1A7
+====================================================================
+
+-------------
+DEEPMAP, bir web sitesindeki tüm bağlantıları (HTML linkleri, 
+JavaScript dosyalarındaki URL’ler, robots.txt ve sitemap.xml içerikleri)
+toplayarak JSON, CSV veya TXT formatında kaydeden bir web crawler’dır.
+
+Amaç: 
+- Web sitelerinin iç link haritasını çıkarmak
+- Güvenlik taraması veya OSINT işlemleri için veri toplamak
+- Eğitim projelerinde crawler mantığını göstermek
+
+====================================================================
+⚙️ KURULUM
+====================================================================
+1. Python 3 (https://www.python.org/downloads) kurulu olmalıdır.
+   → Kurulum sırasında “Add Python to PATH” kutucuğunu işaretle.
+
+2. Proje dosyaları:
+   - site_link_collector.py
+   - install.bat
+   - requirements.txt
+   - README.txt
+
+3. **install.bat** dosyasına çift tıkla.
+   - Virtual environment (.venv) oluşturulur
+   - Gerekli kütüphaneler (requests, bs4, lxml) otomatik yüklenir
+
+4. Kurulum tamamlandıktan sonra terminali aç:
+call .venv\Scripts\activate
+
+markdown
+Kodu kopyala
+
+5. Programı çalıştır:
+python desemap.py https://testphp.vulnweb.com --depth 1 --format all
+
+markdown
+Kodu kopyala
+
+====================================================================
+📦 REQUIREMENTS
+====================================================================
+`requirements.txt` içeriği:
+requests>=2.28
+beautifulsoup4>=4.12
+lxml>=4.9
+
+scss
+Kodu kopyala
+
+Python standart kütüphaneleri (ayrıca yüklenmez):
+argparse
+urllib.parse
+re
+json
+csv
+sys
+time
+concurrent.futures
+collections
+
+markdown
+Kodu kopyala
+
+====================================================================
+🧠 KULLANIM ÖRNEKLERİ
+====================================================================
+• Temel kullanım:
+python desemap.py https://site.com
+
+java
+Kodu kopyala
+
+• Derin tarama (2 seviye):
+python desemap.py https://site.com --depth 2
+
+javascript
+Kodu kopyala
+
+• JSON + CSV + TXT çıktısı almak:
+python desemap.py https://site.com --format all
+
+yaml
+Kodu kopyala
+
+• robots.txt ve sitemap.xml dahil tarama:
+python desemap.py https://site.com --follow-sitemap yes
+
+pgsql
+Kodu kopyala
+
+• Başka domainlere de geç (off-domain tarama):
+python desemap.py https://site.com --follow-external yes
+
+markdown
+Kodu kopyala
+
+====================================================================
+🧩 KOD YAPISI AÇIKLAMASI
+====================================================================
+desemap.py
+│
+├── normalize() → Linkleri düzenler, geçersizleri filtreler
+├── fetch_text() → URL’den sayfa içeriğini indirir
+├── parse_robots() → robots.txt içeriğini analiz eder
+├── parse_sitemap() → sitemap.xml’den linkleri çıkarır
+├── parse_html_for_links() → HTML’deki <a>, <img>, <script>, <iframe> vb. tag’lardan linkleri toplar
+├── collect() → Tüm tarama döngüsünü yönetir (derinlik, filtreleme, hız)
+├── save_json/csv/txt() → Çıktıları belirtilen formatlarda kaydeder
+└── main() → Argümanları okur, taramayı başlatır
+
+markdown
+Kodu kopyala
+
+Kullanılan temel kütüphaneler:
+- **requests** → Web sayfalarını çekmek
+- **BeautifulSoup (bs4)** → HTML & XML parse etmek
+- **lxml** → Hızlı XML analiz motoru
+- **concurrent.futures** → Çoklu thread (paralel istek)
+- **argparse** → Komut satırı argümanlarını yönetmek
+====================================================================
+KOMUT ANLAM : 
+====================================================================
+--depth N
+Başlangıç sayfasından kaç "link sıçraması" yapılacağını belirler. 0 = sadece start, 1 = start + starttaki linkler, vb.
+
+--concurrency N
+Aynı anda kaç paralel istek atılsın (thread sayısı).
+
+--obey-robots yes|no
+yes (default) ise robots.txt’de Disallow olan URL’leri atlar.
+
+--follow-external yes|no
+no (default) ise sadece aynı domain içindeki linkleri takip eder. yes ile dış domainlere de geçer.
+
+--follow-sitemap yes|no
+robots.txt içindeki Sitemap URL’lerini indirir ve içindeki linkleri kuyruğa ekler.
+
+--js-scan yes|no
+Script dosyalarını indirip içindeki URL’leri regex ile tarar (ucuz, yüzeysel).
+
+--timeout SECONDS
+Her HTTP isteği için zaman aşımı.
+
+--max-pages N
+Maksimum taranacak sayfa limiti (koruma amaçlı).
+
+--output NAME ve --format json|csv|txt|all
+Çıktı dosya adını ve formatını kontrol eder (all hepsini kaydeder).
+====================================================================
+
+====================================================================
+🧾 ÖRNEK ÇIKTI
+====================================================================
+[i] Tarama başlıyor: https://testphp.vulnweb.com (depth=1)
+[+] JSON kaydedildi: site_links.json
+[+] CSV kaydedildi: site_links.csv
+[+] TXT kaydedildi: site_links.txt
+[i] Toplam bulunan URL sayısı (sources tablosuna göre): 42
+
+markdown
+Kodu kopyala
+
+====================================================================
+💡 NOTLAR
+====================================================================
+- Program varsayılan olarak robots.txt kurallarına uyar.
+- Maksimum sayfa limiti: 2000 (parametre: --max-pages)
+- HTTP timeout süresi: 12 saniye (parametre: --timeout)
+- JSON çıktısında her URL için:
+  • status_code, content_type, parent sayfa, depth ve title bilgisi bulunur.
+
+====================================================================
+📚 GELİŞTİRİCİ BİLGİSİ
+====================================================================
+Developer : 0x1A7  
+Tool Name : DEEPMAP  
+Year      : 2025  
+Language  : Python 3 (UTF-8)  
+====================================================================
